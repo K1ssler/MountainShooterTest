@@ -1,13 +1,74 @@
-from code.Const import WIN_WIDTH
+import pygame
+
+from code.Const import WIN_WIDTH, WIN_HEIGHT, KNOCKBACK_DISTANCE
 from code.Enemy import Enemy
-from code.EnemyShot import EnemyShot
 from code.Entity import Entity
 from code.Player import Player
-from code.PlayerShot import PlayerShot
 
 
 class EntityMediator:
 
+    @staticmethod
+    def __verify_collision_window(ent: Entity):
+        if isinstance(ent, Enemy):
+            if ent.rect.right <= 0:
+                ent.health = 0  # inimigo saiu da tela, morre
+
+    @staticmethod
+    def __verify_collision_entity(player: Player, enemy: Enemy):
+        knockback_distance = KNOCKBACK_DISTANCE  # ajuste o valor para ficar mais natural
+        collision_sound = pygame.mixer.Sound('./asset/Collision.wav')
+        collision_sound.set_volume(0.5)  # opcional: define volume de 0.0 a 1.0
+
+        if player.invincibility_timer == 0:
+
+            if player.rect.colliderect(enemy.rect):
+                collision_sound.play()
+                player.health -= enemy.damage
+                player.last_dmg = enemy.name
+                player.invincibility_timer = 1000  # 5 segundos de invencibilidade
+
+                dx = player.rect.centerx - enemy.rect.centerx
+                dy = player.rect.centery - enemy.rect.centery
+
+                distance = max((dx ** 2 + dy ** 2) ** 0.5, 1)  # evita divisão por zero
+                norm_dx = dx / distance
+                norm_dy = dy / distance
+
+                # calcula nova posição com knockback
+                new_x = player.rect.x + int(norm_dx * knockback_distance)
+                new_y = player.rect.y + int(norm_dy * knockback_distance)
+
+                # limita para dentro da tela (ajuste WIN_WIDTH/HEIGHT conforme seu jogo)
+                new_x = max(0, min(new_x, WIN_WIDTH - player.rect.width))
+                new_y = max(0, min(new_y, WIN_HEIGHT - player.rect.height))
+
+                player.rect.x = new_x
+                player.rect.y = new_y
+
+
+    @staticmethod
+    def __give_score(enemy: Enemy, player: Player):
+        player.score += enemy.score
+
+    @staticmethod
+    def verify_collision(player: Player, enemies: list[Enemy]):
+        for enemy in enemies:
+            EntityMediator.__verify_collision_window(enemy)
+            EntityMediator.__verify_collision_entity(player, enemy)
+
+    @staticmethod
+    def verify_health(player: Player, enemies: list[Enemy], entity_list: list[Entity]):
+        if player.health <= 0:
+            if player in entity_list:
+                entity_list.remove(player)
+
+        for enemy in enemies[:]:  # evita erro ao remover
+            if enemy.health <= 0:
+                EntityMediator.__give_score(enemy, player)
+                enemies.remove(enemy)
+
+    '''
     @staticmethod
     def __verify_collision_window(ent: Entity):
         if isinstance(ent, Enemy):
@@ -42,6 +103,7 @@ class EntityMediator:
                 ent1.last_dmg = ent2.name
                 ent2.last_dmg = ent1.name
 
+
     @staticmethod
     def __give_score(enemy: Enemy, entity_list: list[Entity]):
         if enemy.last_dmg == 'Player1Shot':
@@ -69,3 +131,4 @@ class EntityMediator:
                 if isinstance(ent, Enemy):
                     EntityMediator.__give_score(ent, entity_list)
                 entity_list.remove(ent)
+    '''

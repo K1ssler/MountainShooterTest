@@ -14,6 +14,7 @@ from code.Entity import Entity
 from code.EntityFactory import EntityFactory
 from code.EntityMediator import EntityMediator
 from code.Player import Player
+from code.utils import GetPlayer
 
 
 class Level:
@@ -27,10 +28,6 @@ class Level:
         player = EntityFactory.get_entity('Player1')
         player.score = player_score[0]
         self.entity_list.append(player)
-        if game_mode in [MENU_OPTION[1], MENU_OPTION[2]]:
-            player = EntityFactory.get_entity('Player2')
-            player.score = player_score[1]
-            self.entity_list.append(player)
         pygame.time.set_timer(EVENT_ENEMY, SPAWN_TIME)
         pygame.time.set_timer(EVENT_TIMEOUT, TIMEOUT_STEP)  # 100ms
 
@@ -40,18 +37,14 @@ class Level:
         pygame.mixer_music.play(-1)
         clock = pygame.time.Clock()
         while True:
-            clock.tick(60)
+            dt = clock.tick(60)
+
             for ent in self.entity_list:
                 self.window.blit(source=ent.surf, dest=ent.rect)
                 ent.move()
-                if isinstance(ent, (Player, Enemy)):
-                    shoot = ent.shoot()
-                    if shoot is not None:
-                        self.entity_list.append(shoot)
                 if ent.name == 'Player1':
                     self.level_text(14, f'Player1 - Health: {ent.health} | Score: {ent.score}', C_GREEN, (10, 25))
-                if ent.name == 'Player2':
-                    self.level_text(14, f'Player2 - Health: {ent.health} | Score: {ent.score}', C_CYAN, (10, 45))
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -65,8 +58,6 @@ class Level:
                         for ent in self.entity_list:
                             if isinstance(ent, Player) and ent.name == 'Player1':
                                 player_score[0] = ent.score
-                            if isinstance(ent, Player) and ent.name == 'Player2':
-                                player_score[1] = ent.score
                         return True
 
                 found_player = False
@@ -83,8 +74,15 @@ class Level:
             self.level_text(14, f'entidades: {len(self.entity_list)}', C_WHITE, (10, WIN_HEIGHT - 20))
             pygame.display.flip()
             # Collisions
-            EntityMediator.verify_collision(entity_list=self.entity_list)
-            EntityMediator.verify_health(entity_list=self.entity_list)
+            player, enemies = GetPlayer.get_player_and_enemies(self.entity_list)
+            if player:
+                if player.invincibility_timer > 0:
+                    player.invincibility_timer -= dt
+                    if player.invincibility_timer < 0:
+                        player.invincibility_timer = 0
+
+                EntityMediator.verify_collision(player, enemies)
+                EntityMediator.verify_health(player, enemies, entity_list=self.entity_list)
 
     def level_text(self, text_size: int, text: str, text_color: tuple, text_pos: tuple):
         text_font: Font = pygame.font.SysFont(name="Lucida Sans Typewriter", size=text_size)
