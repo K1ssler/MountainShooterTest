@@ -11,6 +11,7 @@ C_RED = (139,0,0)
 # E
 EVENT_ENEMY = pygame.USEREVENT + 1
 EVENT_TIMEOUT = pygame.USEREVENT + 2
+EVENT_POINT = pygame.USEREVENT + 3
 ENTITY_SPEED = {
     'Level1Bg0': 0,
     'Level1Bg1': 1,
@@ -25,13 +26,9 @@ ENTITY_SPEED = {
     'Level2Bg3': 3,
     'Level2Bg4': 4,
     'Player1': 3,
-    'Player1Shot': 1,
-    'Player2': 3,
-    'Player2Shot': 3,
     'Enemy1': 1,
-    'Enemy1Shot': 5,
     'Enemy2': 1,
-    'Enemy2Shot': 2,
+    'Point': 3
 }
 
 ENTITY_HEALTH = {
@@ -45,6 +42,7 @@ ENTITY_HEALTH = {
     'Player1': 2,
     'Enemy1': 50,
     'Enemy2': 60,
+    'Point': 1
 
 }
 
@@ -59,6 +57,7 @@ ENTITY_DAMAGE = {
     'Player1': 1,
     'Enemy1': 1,
     'Enemy2': 2,
+    'Point': 1
 }
 
 ENTITY_SCORE = {
@@ -75,18 +74,14 @@ ENTITY_SCORE = {
     'Level2Bg3': 0,
     'Level2Bg4': 0,
     'Player1': 0,
-    'Player1Shot': 0,
-    'Player2': 0,
-    'Player2Shot': 0,
     'Enemy1': 1,
-    'Enemy1Shot': 0,
     'Enemy2': 2,
-    'Enemy2Shot': 0,
+    'Point': 1
 }
 
-# g
+# G
 GOVER_OPTION =  {"New Game": (50, 240),
-            "Return Menu": (380, 240)
+                "Return Menu": (380, 240)
                  }
 
 # K

@@ -7,6 +7,7 @@ from code.Const import WIN_WIDTH, WIN_HEIGHT
 from code.Enemy import Enemy
 from code.GamerOver import GameOver
 from code.Player import Player
+from code.Point import Point
 
 
 class EntityFactory:
@@ -26,4 +27,7 @@ class EntityFactory:
                 return Enemy('Enemy1', (WIN_WIDTH + 10, random.randint(40, WIN_HEIGHT - 40)))
             case 'Enemy2':
                 return Enemy('Enemy2', (WIN_WIDTH + 10, random.randint(40, WIN_HEIGHT - 40)))
+            case 'Point':
+                print('Ponto Factory')
+                return Point('Point',  (random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT)))
         return None
