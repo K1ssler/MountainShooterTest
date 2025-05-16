@@ -15,6 +15,7 @@ from code.EntityFactory import EntityFactory
 from code.EntityMediator import EntityMediator
 from code.Player import Player
 from code.utils import GetPlayer
+from code.GamerOver import GameOver
 
 
 class Level:
@@ -25,6 +26,7 @@ class Level:
         self.game_mode = game_mode
         self.entity_list: list[Entity] = []
         self.entity_list.extend(EntityFactory.get_entity(self.name + 'Bg'))
+
         player = EntityFactory.get_entity('Player1')
         player.score = player_score[0]
         self.entity_list.append(player)
@@ -66,7 +68,10 @@ class Level:
                         found_player = True
 
                 if not found_player:
+                    pygame.mixer.music.stop()
                     return False
+
+
 
             # printed text
             self.level_text(14, f'{self.name} - Timeout: {self.timeout / 1000:.1f}s', C_WHITE, (10, 5))

@@ -6,6 +6,7 @@ C_YELLOW = (255, 255, 128)
 C_WHITE = (255, 255, 255)
 C_GREEN = (0, 128, 0)
 C_CYAN = (0, 128, 128)
+C_RED = (139,0,0)
 
 # E
 EVENT_ENEMY = pygame.USEREVENT + 1
@@ -41,7 +42,7 @@ ENTITY_HEALTH = {
     'Level1Bg4': 999,
     'Level1Bg5': 999,
     'Level1Bg6': 999,
-    'Player1': 5,
+    'Player1': 2,
     'Enemy1': 50,
     'Enemy2': 60,
 
@@ -82,6 +83,11 @@ ENTITY_SCORE = {
     'Enemy2': 2,
     'Enemy2Shot': 0,
 }
+
+# g
+GOVER_OPTION =  {"New Game": (50, 240),
+            "Return Menu": (380, 240)
+                 }
 
 # K
 KNOCKBACK_DISTANCE = 100

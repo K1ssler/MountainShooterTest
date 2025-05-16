@@ -63,6 +63,7 @@ class EntityMediator:
             if player in entity_list:
                 entity_list.remove(player)
 
+
         for enemy in enemies[:]:  # evita erro ao remover
             if enemy.health <= 0:
                 EntityMediator.__give_score(enemy, player)
