@@ -4,6 +4,7 @@ from code.Const import WIN_WIDTH, WIN_HEIGHT, KNOCKBACK_DISTANCE
 from code.Enemy import Enemy
 from code.Entity import Entity
 from code.Player import Player
+from code.Point import Point
 
 
 class EntityMediator:
@@ -46,28 +47,55 @@ class EntityMediator:
                 player.rect.x = new_x
                 player.rect.y = new_y
 
+    @staticmethod
+    def __verify_collision_point(player: Player, point: Point):
+
+        if point.name == 'Point':
+            collision_sound = pygame.mixer.Sound('./asset/Coin.wav')
+        else:
+            collision_sound = pygame.mixer.Sound('./asset/Diamond.wav')
+        collision_sound.set_volume(0.5)  # opcional: define volume de 0.0 a 1.0
+
+        if player.rect.colliderect(point.rect):
+            collision_sound.play()
+            player.score += point.score
+            point.health -= player.damage
+
+
 
     @staticmethod
     def __give_score(enemy: Enemy, player: Player):
         player.score += enemy.score
 
     @staticmethod
-    def verify_collision(player: Player, enemies: list[Enemy]):
+    def verify_collision(player: Player, enemies: list[Enemy], points: list[Point]):
         for enemy in enemies:
             EntityMediator.__verify_collision_window(enemy)
             EntityMediator.__verify_collision_entity(player, enemy)
 
+        for point in points:
+            EntityMediator.__verify_collision_window(point)
+            EntityMediator.__verify_collision_point(player, point)
+
+
     @staticmethod
-    def verify_health(player: Player, enemies: list[Enemy], entity_list: list[Entity]):
-        if player.health <= 0:
-            if player in entity_list:
-                entity_list.remove(player)
+    def verify_health(player: Player, enemies: list[Enemy], points: list[Point], entity_list: list[Entity]):
+        # Verifica se o player morreu
+        if player.health <= 0 and player in entity_list:
+            entity_list.remove(player)
 
-
-        for enemy in enemies[:]:  # evita erro ao remover
+        for enemy in enemies[:]:  # cria uma cópia da lista para evitar erro ao remover
             if enemy.health <= 0:
                 EntityMediator.__give_score(enemy, player)
                 enemies.remove(enemy)
+                if enemy in entity_list:
+                    entity_list.remove(enemy)
+
+        for point in points[:]:
+            if point.health <= 0:
+                points.remove(point)
+                if point in entity_list:
+                    entity_list.remove(point)
 
     '''
     @staticmethod

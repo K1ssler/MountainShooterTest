@@ -28,6 +28,7 @@ class EntityFactory:
             case 'Enemy2':
                 return Enemy('Enemy2', (WIN_WIDTH + 10, random.randint(40, WIN_HEIGHT - 40)))
             case 'Point':
-                print('Ponto Factory')
                 return Point('Point',  (random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT)))
+            case 'Point1':
+                return Point('Point1', (random.randint(0, WIN_WIDTH), random.randint(0, WIN_HEIGHT)))
         return None

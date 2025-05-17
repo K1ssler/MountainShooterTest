@@ -8,7 +8,7 @@ from pygame import Surface, Rect
 from pygame.font import Font
 
 from code.Const import C_WHITE, WIN_HEIGHT, MENU_OPTION, EVENT_ENEMY, SPAWN_TIME, C_GREEN, C_CYAN, EVENT_TIMEOUT, \
-    TIMEOUT_STEP, TIMEOUT_LEVEL, EVENT_POINT
+    TIMEOUT_STEP, TIMEOUT_LEVEL, EVENT_POINT, SPAWN_POINT, EVENT_DIAMOND, SPAWN_DIAMOND
 from code.Enemy import Enemy
 from code.Entity import Entity
 from code.EntityFactory import EntityFactory
@@ -31,7 +31,8 @@ class Level:
         player.score = player_score[0]
         self.entity_list.append(player)
         pygame.time.set_timer(EVENT_ENEMY, SPAWN_TIME)
-        pygame.time.set_timer(EVENT_POINT, 2000)
+        pygame.time.set_timer(EVENT_POINT, SPAWN_POINT)
+        pygame.time.set_timer(EVENT_DIAMOND, SPAWN_DIAMOND)
         pygame.time.set_timer(EVENT_TIMEOUT, TIMEOUT_STEP)  # 100ms
 
     def run(self, player_score: list[int]):
@@ -53,12 +54,12 @@ class Level:
                     pygame.quit()
                     sys.exit()
                 if event.type == EVENT_ENEMY:
-                    print('Inimigo Level')
                     choice = random.choice(('Enemy1', 'Enemy2'))
                     self.entity_list.append(EntityFactory.get_entity(choice))
                 if event.type == EVENT_POINT:
-                    print('Ponto Level')
                     self.entity_list.append(EntityFactory.get_entity('Point'))
+                if event.type == EVENT_DIAMOND:
+                    self.entity_list.append((EntityFactory.get_entity('Point1')))
                 if event.type == EVENT_TIMEOUT:
                     self.timeout -= TIMEOUT_STEP
                     if self.timeout == 0:
@@ -84,15 +85,15 @@ class Level:
             self.level_text(14, f'entidades: {len(self.entity_list)}', C_WHITE, (10, WIN_HEIGHT - 20))
             pygame.display.flip()
             # Collisions
-            player, enemies = GetPlayer.get_player_and_enemies(self.entity_list)
+            player, enemies, points = GetPlayer.get_player_and_enemies(self.entity_list)
             if player:
                 if player.invincibility_timer > 0:
                     player.invincibility_timer -= dt
                     if player.invincibility_timer < 0:
                         player.invincibility_timer = 0
 
-                EntityMediator.verify_collision(player, enemies)
-                EntityMediator.verify_health(player, enemies, entity_list=self.entity_list)
+                EntityMediator.verify_collision(player, enemies, points)
+                EntityMediator.verify_health(player, enemies, points ,entity_list=self.entity_list)
 
     def level_text(self, text_size: int, text: str, text_color: tuple, text_pos: tuple):
         text_font: Font = pygame.font.SysFont(name="Lucida Sans Typewriter", size=text_size)

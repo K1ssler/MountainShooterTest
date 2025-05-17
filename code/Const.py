@@ -12,6 +12,7 @@ C_RED = (139,0,0)
 EVENT_ENEMY = pygame.USEREVENT + 1
 EVENT_TIMEOUT = pygame.USEREVENT + 2
 EVENT_POINT = pygame.USEREVENT + 3
+EVENT_DIAMOND = pygame.USEREVENT + 4
 ENTITY_SPEED = {
     'Level1Bg0': 0,
     'Level1Bg1': 1,
@@ -28,7 +29,8 @@ ENTITY_SPEED = {
     'Player1': 3,
     'Enemy1': 1,
     'Enemy2': 1,
-    'Point': 3
+    'Point': 3,
+    'Point1': 1
 }
 
 ENTITY_HEALTH = {
@@ -42,7 +44,8 @@ ENTITY_HEALTH = {
     'Player1': 2,
     'Enemy1': 50,
     'Enemy2': 60,
-    'Point': 1
+    'Point': 1,
+    'Point1': 1
 
 }
 
@@ -57,7 +60,8 @@ ENTITY_DAMAGE = {
     'Player1': 1,
     'Enemy1': 1,
     'Enemy2': 2,
-    'Point': 1
+    'Point': 1,
+    'Point1': 1
 }
 
 ENTITY_SCORE = {
@@ -76,7 +80,8 @@ ENTITY_SCORE = {
     'Player1': 0,
     'Enemy1': 1,
     'Enemy2': 2,
-    'Point': 1
+    'Point': 8,
+    'Point1': 12
 }
 
 # G
@@ -107,7 +112,10 @@ PLAYER_KEY_SHOOT = {'Player1': pygame.K_RCTRL,
                     'Player2': pygame.K_LCTRL}
 
 # S
-SPAWN_TIME = 4000
+SPAWN_TIME = 2000
+SPAWN_POINT = 2000
+SPAWN_DIAMOND = 8000
+
 
 # T
 TIMEOUT_STEP = 100  # 100ms
